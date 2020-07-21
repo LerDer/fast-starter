@@ -1,0 +1,126 @@
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'maven'
+    apply plugin: 'eclipse'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    idea {
+        module {
+            downloadSources = false
+            downloadJavadoc = false
+        }
+    }
+
+    sourceCompatibility = 1.8
+
+    group = 'com.lww'
+    version = '1.0.0'
+
+    configurations {
+        provided
+        compile.extendsFrom provided
+        deployerJars
+    }
+
+    jar.enabled = true
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives sourcesJar
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                configuration = configurations.deployerJars
+                snapshotRepository(url: "http://192.168.10.227:8081/repository/maven-snapshots/") {
+                    //authentication(userName: "$mavenUser", password: "$mavenPass")
+                }
+                repository(url: "http://192.168.10.227:8081/repository/maven-releases/") {
+                    //authentication(userName: "$mavenUser", password: "$mavenPass")
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name 'public'
+            url 'http://192.168.10.227:8081/repository/maven-public/'
+            mavenLocal()
+        }
+    }
+
+    // 全局排除可能引起问题的其它日志框架
+    configurations {
+        compile.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        compile.exclude group: 'log4j', module: '*'
+        compile.exclude group: 'org.apache.logging.log4j', module: '*'
+        compile.exclude group: 'commons-logging', module: '*'
+    }
+
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+
+        compileOnly 'org.projectlombok:lombok:1.18.2'
+        annotationProcessor 'org.projectlombok:lombok:1.18.2'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.2'
+        testCompileOnly 'org.projectlombok:lombok:1.18.2'
+    }
+}
+
+buildscript {
+    ext {
+        springBootVersion = '2.2.6.RELEASE'
+    }
+    repositories {
+        maven {
+            name 'public'
+            url 'http://192.168.10.227:8081/repository/maven-public/'
+            mavenLocal()
+        }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+dependencies {
+    // compile('org.springframework.boot:spring-boot-starter-aop')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+
+    compile(group: "org.springframework.boot", name: "spring-boot-configuration-processor")
+    compile(group: "org.springframework.boot", name: "spring-boot-autoconfigure")
+    
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+    compile group: 'commons-io', name: 'commons-io', version: '2.4'
+
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.62'
+
+    compile(group: "com.alibaba", name: "druid-spring-boot-starter", version: "1.1.13")
+    compile(group: "mysql", name: "mysql-connector-java", version: "8.0.18")
+    compile("com.baomidou:mybatis-plus-boot-starter:3.0.4")
+
+    compile(group: "io.springfox", name: "springfox-swagger2", version: "2.9.2") {
+        exclude group: 'io.swagger', module: 'swagger-models'
+    }
+    compile(group: "io.swagger", name: "swagger-models", version: "1.5.21") {
+        exclude group: 'io.swagger', module: 'swagger-annotations'
+    }
+    compile(group: "io.springfox", name: "springfox-swagger-ui", version: "2.9.2")
+
+    compile(group: "org.apache.httpcomponents", name: "httpmime", version: "4.5.7")
+    compile(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.10")
+}
