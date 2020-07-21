@@ -30,11 +30,6 @@ public class MybatisConfigProperties {
     private String typeAliasesPackage;
 
     /**
-     * dao接口包名 如：com.lww.fast.dao
-     */
-    private String daoPackage;
-
-    /**
      * xml文件路径 默认：classpath*:mapper/*.xml
      */
     private String xmlLocation = "classpath*:mapper/*.xml";
@@ -43,14 +38,6 @@ public class MybatisConfigProperties {
      * 默认：com.mysql.cj.jdbc.Driver
      */
     private String driverClassName = "com.mysql.cj.jdbc.Driver";
-
-    public String getDaoPackage() {
-        return daoPackage;
-    }
-
-    public void setDaoPackage(String daoPackage) {
-        this.daoPackage = daoPackage;
-    }
 
     public String getDriverClassName() {
         return driverClassName;

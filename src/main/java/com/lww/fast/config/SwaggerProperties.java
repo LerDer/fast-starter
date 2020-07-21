@@ -8,42 +8,42 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("com.fast.swagger")
 public class SwaggerProperties {
 
-	/**
-	 * controller 包名 如：com.lww.fast.controller
-	 */
-	private String controllerPackageName;
+    /**
+     * controller 包名 如：com.lww.fast.controller
+     */
+    private String controllerPackageName;
 
-	/**
-	 * swagger 标题
-	 */
-	private String title;
+    /**
+     * swagger 标题
+     */
+    private String title;
 
-	/**
-	 * api 版本
-	 */
-	private String version;
+    /**
+     * api 版本，默认：1.0.0
+     */
+    private String version = "1.0.0";
 
-	public String getVersion() {
-		return version;
-	}
+    public String getVersion() {
+        return version;
+    }
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
-	public String getControllerPackageName() {
-		return controllerPackageName;
-	}
+    public String getControllerPackageName() {
+        return controllerPackageName;
+    }
 
-	public void setControllerPackageName(String controllerPackageName) {
-		this.controllerPackageName = controllerPackageName;
-	}
+    public void setControllerPackageName(String controllerPackageName) {
+        this.controllerPackageName = controllerPackageName;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

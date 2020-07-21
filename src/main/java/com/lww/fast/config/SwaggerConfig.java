@@ -1,17 +1,11 @@
 package com.lww.fast.config;
 
 import javax.annotation.Resource;
-import javax.servlet.Filter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.util.Assert;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -29,35 +23,37 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableConfigurationProperties(SwaggerProperties.class)
 public class SwaggerConfig implements WebMvcConfigurer {
 
-	@Resource
-	private SwaggerProperties properties;
+    @Resource
+    private SwaggerProperties config;
 
-	@Bean
-	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2)
-				.forCodeGeneration(true)
-				.select()
-				.apis(RequestHandlerSelectors.basePackage(properties.getControllerPackageName()))
-				.build()
-				.apiInfo(apiInfo());
-	}
+    @Bean
+    public Docket api() {
+        Assert.isTrue(StringUtils.isNotBlank(config.getControllerPackageName()), "controller包为空！");
+        return new Docket(DocumentationType.SWAGGER_2)
+                .forCodeGeneration(true)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage(config.getControllerPackageName()))
+                .build()
+                .apiInfo(apiInfo());
+    }
 
-	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder()
-				.title(properties.getTitle())
-				.description("接口文档")
-				.version(properties.getVersion())
-				.build();
-	}
+    private ApiInfo apiInfo() {
+        Assert.isTrue(StringUtils.isNotBlank(config.getTitle()), "标题为空！");
+        return new ApiInfoBuilder()
+                .title(config.getTitle())
+                .description("接口文档")
+                .version(config.getVersion())
+                .build();
+    }
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/**")
-				.addResourceLocations("classpath:/static/");
-		registry.addResourceHandler("swagger-ui.html")
-				.addResourceLocations("classpath:/META-INF/resources/");
-		registry.addResourceHandler("/webjars/**")
-				.addResourceLocations("classpath:/META-INF/resources/webjars/");
-	}
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
 
 }

@@ -9,11 +9,11 @@ import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +22,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.Assert;
 
 /**
  * @author lww
@@ -29,8 +30,9 @@ import org.springframework.transaction.support.TransactionTemplate;
  */
 @Slf4j
 @Configuration
-//@MapperScan(basePackages = "com.ler.sparrowmanager.dao", sqlSessionTemplateRef = "sqlSessionTemplate")
-@ConditionalOnBean(MybatisConfigProperties.class)
+//sqlSessionTemplateRef : Usually this is only needed when you have more than one datasource.
+//@MapperScan(basePackages = "com.ler.sparrowmanager.dao")
+//@ConditionalOnExpression("#{environment.getProperty('com.fast.mybatis.url') != null}")
 @EnableConfigurationProperties(MybatisConfigProperties.class)
 public class MybatisConfig {
 
@@ -39,6 +41,10 @@ public class MybatisConfig {
 
     @Bean("dataSource")
     public DataSource dataSource() {
+        Assert.isTrue(StringUtils.isNotBlank(config.getPassword()), "数据库密码为空！");
+        Assert.isTrue(StringUtils.isNotBlank(config.getUsername()), "数据库用户名为空！");
+        Assert.isTrue(StringUtils.isNotBlank(config.getUrl()), "数据库链接为空！");
+        Assert.isTrue(StringUtils.isNotBlank(config.getTypeAliasesPackage()), "别名包为空！");
         try {
             DruidDataSource dataSource = new DruidDataSource();
             dataSource.setDriverClassName(config.getDriverClassName());
