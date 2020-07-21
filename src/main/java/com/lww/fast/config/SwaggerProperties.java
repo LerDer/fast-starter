@@ -8,10 +8,19 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("com.fast.swagger")
 public class SwaggerProperties {
 
+	/**
+	 * controller 包名 如：com.lww.fast.controller
+	 */
 	private String controllerPackageName;
 
+	/**
+	 * swagger 标题
+	 */
 	private String title;
 
+	/**
+	 * api 版本
+	 */
 	private String version;
 
 	public String getVersion() {
