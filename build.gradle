@@ -8,7 +8,7 @@ allprojects {
 
     idea {
         module {
-            downloadSources = false
+            downloadSources = true
             downloadJavadoc = false
         }
     }
