@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOG_PATH" value="/www/logs"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%p] [%.10t] [%c{1}][%L] %X{sbtTraceId} %m%n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="fast" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/fast.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%p] [%.10t] [%c{1}][%L] %X{sbtTraceId} %m%n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/fast.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="sql" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/fast_sql.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%p] [%.10t] [%c{1}][%L] %X{sbtTraceId} %m%n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/fast_sql.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="console"/>
+        <appender-ref ref="fast"/>
+        <appender-ref ref="sql"/>
+    </root>
+
+    <!--<logger name="org.springframework" level="DEBUG" />-->
+
+    <!-- https://logback.qos.ch/manual/configuration.html -->
+    <logger name="com.ler.manager.dao" level="DEBUG" additivity="false">
+        <appender-ref ref="sql"/>
+    </logger>
+
+</configuration>
